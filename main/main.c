@@ -2,7 +2,8 @@
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "freertos/semphr.h"
+#include "freertos/queue.h"
+#include "freertos/event_groups.h"
 #include "driver/gpio.h"
 #include "driver/i2c_master.h"
 #include "esp_timer.h"
@@ -19,18 +20,19 @@
 #define OLED_W     128
 #define OLED_H     32
 #define SCALE      2
-#define TASK_PRIO  1
+#define TASK_PRIO  1            // beacon tasks: all equal
+#define DISP_PRIO  5            // display task: higher, blocks on queue
 #define BLINKS     5
-
-#define FORCE_YIELD  0          // 1 = taskYIELD() every 15 ms (fallback)
-#define SLICE_US     15000
 
 #define MAXSW  200
 #define MAXEV  100
 
+#define MSG_DONE  3
+
 /* ---------- OLED (SSD1306 128x32) ---------- */
 static i2c_master_dev_handle_t oled;
 static uint8_t fb[OLED_W * OLED_H / 8];
+static uint8_t tx[1 + OLED_W * OLED_H / 8];
 
 typedef struct { char c; uint8_t d[5]; } glyph_t;
 static const glyph_t FONT[] = {
@@ -64,20 +66,18 @@ static void oled_init(i2c_master_bus_handle_t bus) {
         0xAE, 0xD5, 0x80, 0xA8, 0x1F, 0xD3, 0x00, 0x40,
         0x8D, 0x14, 0x20, 0x00, 0xA1, 0xC8, 0xDA, 0x02,
         0x81, 0x8F, 0xD9, 0xF1, 0xDB, 0x40, 0xA4, 0xA6,
-        0x2E, 0xAF,
+        0x2E,
+        0x21, 0x00, OLED_W - 1,            // column window, set once
+        0x22, 0x00, (OLED_H / 8) - 1,      // page window, set once
+        0xAF,
     };
     ESP_ERROR_CHECK(i2c_master_transmit(oled, init_seq, sizeof(init_seq), 100));
 }
 
 static void oled_flush(void) {
-    static const uint8_t window[] = { 0x00, 0x21, 0, OLED_W - 1, 0x22, 0, (OLED_H / 8) - 1 };
-    i2c_master_transmit(oled, window, sizeof(window), 100);
-    uint8_t buf[OLED_W + 1];
-    buf[0] = 0x40;
-    for (int pg = 0; pg < OLED_H / 8; pg++) {
-        memcpy(&buf[1], &fb[pg * OLED_W], OLED_W);
-        i2c_master_transmit(oled, buf, sizeof(buf), 100);
-    }
+    tx[0] = 0x40;
+    memcpy(&tx[1], fb, sizeof(fb));
+    i2c_master_transmit(oled, tx, sizeof(tx), 100);
 }
 
 static void fb_pixel(int x, int y) {
@@ -111,23 +111,27 @@ typedef struct {
     const char *name, *line1, *line2;
     gpio_num_t  led;
     uint32_t    half_ms;
+    uint8_t     id;
+    EventBits_t bit;
     int64_t     last;
     int         n;
     int64_t     out[MAXSW], in[MAXSW];
 } beacon_t;
 
 static beacon_t beacons[] = {
-    { .name = "Task A", .line1 = "TASK A", .line2 = "RUNNING", .led = PIN_LED1, .half_ms = 200 },
-    { .name = "Task B", .line1 = "TASK B", .line2 = "RUNNING", .led = PIN_LED2, .half_ms = 300 },
-    { .name = "Task C", .line1 = "TASK C", .line2 = "RUNNING", .led = PIN_LED3, .half_ms = 100 },
+    { .name = "Task A", .line1 = "TASK A", .line2 = "RUNNING", .led = PIN_LED1, .half_ms = 200, .id = 0, .bit = (1 << 0) },
+    { .name = "Task B", .line1 = "TASK B", .line2 = "RUNNING", .led = PIN_LED2, .half_ms = 300, .id = 1, .bit = (1 << 1) },
+    { .name = "Task C", .line1 = "TASK C", .line2 = "RUNNING", .led = PIN_LED3, .half_ms = 100, .id = 2, .bit = (1 << 2) },
 };
+#define ALL_BITS ((1 << 0) | (1 << 1) | (1 << 2))
 
 typedef struct { int64_t t; const char *name; const char *what; int blink; } ev_t;
 static ev_t evs[MAXEV];
 static int ev_n = 0;
 static portMUX_TYPE ev_mux = portMUX_INITIALIZER_UNLOCKED;
 
-static SemaphoreHandle_t oled_mtx;
+static QueueHandle_t disp_q;
+static EventGroupHandle_t start_grp;
 static int tasks_done = 0;
 
 static void ev_add(const beacon_t *b, const char *what, int blink) {
@@ -137,31 +141,31 @@ static void ev_add(const beacon_t *b, const char *what, int blink) {
     portEXIT_CRITICAL(&ev_mux);
 }
 
-// Busy-wait on timestamp. Task stays Ready -> time-sliced.
-// Records every gap > 2 ms = task was switched out.
-static void wait_ms(beacon_t *b, uint32_t ms) {
-    int64_t end = esp_timer_get_time() + (int64_t)ms * 1000;
+// Display task: higher priority, sleeps on queue, wakes instantly.
+static void display_task(void *pv) {
+    int shown = -1;
+    uint8_t msg;
+    while (1) {
+        if (xQueueReceive(disp_q, &msg, portMAX_DELAY) == pdTRUE) {
+            if (msg == shown) continue;
+            shown = msg;
+            if (msg == MSG_DONE) oled_show("ALL TASKS", "DONE");
+            else oled_show(beacons[msg].line1, beacons[msg].line2);
+        }
+    }
+}
+
+// Busy-wait until absolute deadline (us). Task stays Ready -> time-sliced.
+// A gap > 2 ms between polls = task was switched out.
+static void wait_until(beacon_t *b, int64_t deadline) {
     int64_t now;
-#if FORCE_YIELD
-    int64_t slice_start = esp_timer_get_time();
-#endif
-    b->last = 0;
-    while ((now = esp_timer_get_time()) < end) {
+    while ((now = esp_timer_get_time()) < deadline) {
         if (b->last && (now - b->last) > 2000 && b->n < MAXSW) {
             b->out[b->n] = b->last;
             b->in[b->n]  = now;
             b->n++;
-#if FORCE_YIELD
-            slice_start = now;
-#endif
         }
         b->last = now;
-#if FORCE_YIELD
-        if (now - slice_start >= SLICE_US) {
-            taskYIELD();
-            slice_start = esp_timer_get_time();
-        }
-#endif
     }
 }
 
@@ -186,31 +190,40 @@ static void dump_all(void) {
 static void beacon_task(void *pv) {
     beacon_t *b = (beacon_t *)pv;
 
-    // OLED: show this task at start
-    xSemaphoreTake(oled_mtx, portMAX_DELAY);
-    oled_show(b->line1, b->line2);
-    xSemaphoreGive(oled_mtx);
+    // All tasks start blinking together.
+    xEventGroupSync(start_grp, b->bit, ALL_BITS, portMAX_DELAY);
+
+    b->last = 0;
+    b->n = 0;
+    int64_t t = esp_timer_get_time();
 
     for (int i = 1; i <= BLINKS; i++) {
         gpio_set_level(b->led, 1);
         ev_add(b, "ON", i);
-        wait_ms(b, b->half_ms);
+        xQueueSend(disp_q, &b->id, 0);          // never blocks
+
+        t += (int64_t)b->half_ms * 1000;
+        wait_until(b, t);
 
         gpio_set_level(b->led, 0);
         ev_add(b, "OFF", i);
-        wait_ms(b, b->half_ms);
+        t += (int64_t)b->half_ms * 1000;
+        wait_until(b, t);
     }
 
     gpio_set_level(b->led, 0);
     ev_add(b, "DONE", BLINKS);
 
-    xSemaphoreTake(oled_mtx, portMAX_DELAY);
+    portENTER_CRITICAL(&ev_mux);
     int d = ++tasks_done;
+    portEXIT_CRITICAL(&ev_mux);
+
     if (d == 3) {
-        oled_show("ALL TASKS", "DONE");
+        uint8_t m = MSG_DONE;
+        xQueueSend(disp_q, &m, portMAX_DELAY);
+        vTaskDelay(pdMS_TO_TICKS(100));          // let OLED finish
         dump_all();
     }
-    xSemaphoreGive(oled_mtx);
 
     vTaskDelete(NULL);
 }
@@ -237,9 +250,12 @@ void app_main(void) {
     oled_init(bus);
     oled_show("STARTING", "");
 
-    oled_mtx = xSemaphoreCreateMutex();
+    disp_q    = xQueueCreate(8, sizeof(uint8_t));
+    start_grp = xEventGroupCreate();
 
-    vTaskDelay(pdMS_TO_TICKS(3000));   // let terminal reconnect
+    xTaskCreate(display_task, "Display", 4096, NULL, DISP_PRIO, NULL);
+
+    //vTaskDelay(pdMS_TO_TICKS(3000));   // let terminal reconnect
 
     // Same priority -> round-robin
     xTaskCreate(beacon_task, "Task A", 4096, &beacons[0], TASK_PRIO, NULL);
