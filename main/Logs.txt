@@ -1,0 +1,165 @@
+==== EVENTS ====
+[      52 ms] Task C blink 1 ON
+[      52 ms] Task A blink 1 ON
+[      53 ms] Task B blink 1 ON
+[     168 ms] Task C blink 1 OFF
+[     259 ms] Task C blink 2 ON
+[     259 ms] Task A blink 1 OFF
+[     352 ms] Task C blink 2 OFF
+[     380 ms] Task B blink 1 OFF
+[     452 ms] Task C blink 3 ON
+[     452 ms] Task A blink 2 ON
+[     562 ms] Task C blink 3 OFF
+[     653 ms] Task C blink 4 ON
+[     653 ms] Task A blink 2 OFF
+[     654 ms] Task B blink 2 ON
+[     759 ms] Task C blink 4 OFF
+[     852 ms] Task C blink 5 ON
+[     852 ms] Task A blink 3 ON
+[     953 ms] Task B blink 2 OFF
+[     956 ms] Task C blink 5 OFF
+[    1052 ms] Task C blink 5 DONE
+[    1052 ms] Task A blink 3 OFF
+[    1253 ms] Task B blink 3 ON
+[    1253 ms] Task A blink 4 ON
+[    1452 ms] Task A blink 4 OFF
+[    1553 ms] Task B blink 3 OFF
+[    1653 ms] Task A blink 5 ON
+[    1852 ms] Task A blink 5 OFF
+[    1865 ms] Task B blink 4 ON
+[    2062 ms] Task A blink 5 DONE
+[    2153 ms] Task B blink 4 OFF
+[    2453 ms] Task B blink 5 ON
+[    2753 ms] Task B blink 5 OFF
+[    3053 ms] Task B blink 5 DONE
+==== SWITCHES (task preempted: ran / waited) ====
+Task A out@107 ms  back@138 ms  waited=30 ms  ran=15 ms
+Task A out@153 ms  back@183 ms  waited=30 ms  ran=15 ms
+Task A out@198 ms  back@229 ms  waited=30 ms  ran=15 ms
+Task A out@244 ms  back@259 ms  waited=15 ms  ran=15 ms
+Task A out@271 ms  back@274 ms  waited=3 ms  ran=11 ms
+Task A out@289 ms  back@319 ms  waited=30 ms  ran=15 ms
+Task A out@335 ms  back@365 ms  waited=30 ms  ran=15 ms
+Task A out@380 ms  back@410 ms  waited=30 ms  ran=15 ms
+Task A out@426 ms  back@452 ms  waited=26 ms  ran=15 ms
+Task A out@465 ms  back@486 ms  waited=21 ms  ran=12 ms
+Task A out@501 ms  back@532 ms  waited=30 ms  ran=15 ms
+Task A out@547 ms  back@577 ms  waited=30 ms  ran=15 ms
+Task A out@592 ms  back@623 ms  waited=30 ms  ran=15 ms
+Task A out@638 ms  back@653 ms  waited=15 ms  ran=15 ms
+Task A out@677 ms  back@683 ms  waited=6 ms  ran=23 ms
+Task A out@698 ms  back@729 ms  waited=30 ms  ran=15 ms
+Task A out@744 ms  back@774 ms  waited=30 ms  ran=15 ms
+Task A out@789 ms  back@819 ms  waited=30 ms  ran=15 ms
+Task A out@835 ms  back@852 ms  waited=17 ms  ran=15 ms
+Task A out@876 ms  back@880 ms  waited=4 ms  ran=24 ms
+Task A out@895 ms  back@926 ms  waited=30 ms  ran=15 ms
+Task A out@941 ms  back@971 ms  waited=30 ms  ran=15 ms
+Task A out@986 ms  back@1016 ms  waited=30 ms  ran=15 ms
+Task A out@1032 ms  back@1052 ms  waited=20 ms  ran=15 ms
+Task A out@1062 ms  back@1077 ms  waited=15 ms  ran=10 ms
+Task A out@1092 ms  back@1107 ms  waited=15 ms  ran=15 ms
+Task A out@1122 ms  back@1138 ms  waited=15 ms  ran=15 ms
+Task A out@1153 ms  back@1168 ms  waited=15 ms  ran=15 ms
+Task A out@1183 ms  back@1198 ms  waited=15 ms  ran=15 ms
+Task A out@1213 ms  back@1229 ms  waited=15 ms  ran=15 ms
+Task A out@1244 ms  back@1253 ms  waited=9 ms  ran=15 ms
+Task A out@1277 ms  back@1289 ms  waited=12 ms  ran=23 ms
+Task A out@1304 ms  back@1319 ms  waited=15 ms  ran=15 ms
+Task A out@1335 ms  back@1350 ms  waited=15 ms  ran=15 ms
+Task A out@1365 ms  back@1380 ms  waited=15 ms  ran=15 ms
+Task A out@1395 ms  back@1410 ms  waited=15 ms  ran=15 ms
+Task A out@1426 ms  back@1441 ms  waited=15 ms  ran=15 ms
+Task A out@1456 ms  back@1471 ms  waited=15 ms  ran=15 ms
+Task A out@1486 ms  back@1501 ms  waited=15 ms  ran=15 ms
+Task A out@1516 ms  back@1532 ms  waited=15 ms  ran=15 ms
+Task A out@1547 ms  back@1562 ms  waited=15 ms  ran=15 ms
+Task A out@1577 ms  back@1592 ms  waited=15 ms  ran=15 ms
+Task A out@1607 ms  back@1622 ms  waited=15 ms  ran=15 ms
+Task A out@1638 ms  back@1668 ms  waited=30 ms  ran=15 ms
+Task A out@1683 ms  back@1698 ms  waited=15 ms  ran=15 ms
+Task A out@1713 ms  back@1729 ms  waited=15 ms  ran=15 ms
+Task A out@1744 ms  back@1759 ms  waited=15 ms  ran=15 ms
+Task A out@1774 ms  back@1789 ms  waited=15 ms  ran=15 ms
+Task A out@1804 ms  back@1819 ms  waited=15 ms  ran=15 ms
+Task A out@1835 ms  back@1850 ms  waited=15 ms  ran=15 ms
+Task A out@1877 ms  back@1880 ms  waited=3 ms  ran=27 ms
+Task A out@1895 ms  back@1910 ms  waited=15 ms  ran=15 ms
+Task A out@1925 ms  back@1941 ms  waited=15 ms  ran=15 ms
+Task A out@1956 ms  back@1971 ms  waited=15 ms  ran=15 ms
+Task A out@1986 ms  back@2001 ms  waited=15 ms  ran=15 ms
+Task A out@2016 ms  back@2032 ms  waited=15 ms  ran=15 ms
+Task B out@123 ms  back@153 ms  waited=30 ms  ran=15 ms
+Task B out@168 ms  back@198 ms  waited=30 ms  ran=15 ms
+Task B out@213 ms  back@244 ms  waited=30 ms  ran=15 ms
+Task B out@271 ms  back@289 ms  waited=18 ms  ran=27 ms
+Task B out@304 ms  back@335 ms  waited=30 ms  ran=15 ms
+Task B out@350 ms  back@380 ms  waited=30 ms  ran=15 ms
+Task B out@395 ms  back@426 ms  waited=30 ms  ran=15 ms
+Task B out@441 ms  back@453 ms  waited=12 ms  ran=15 ms
+Task B out@471 ms  back@501 ms  waited=30 ms  ran=18 ms
+Task B out@516 ms  back@547 ms  waited=30 ms  ran=15 ms
+Task B out@562 ms  back@592 ms  waited=30 ms  ran=15 ms
+Task B out@607 ms  back@638 ms  waited=30 ms  ran=15 ms
+Task B out@677 ms  back@698 ms  waited=21 ms  ran=39 ms
+Task B out@713 ms  back@744 ms  waited=30 ms  ran=15 ms
+Task B out@759 ms  back@789 ms  waited=30 ms  ran=15 ms
+Task B out@804 ms  back@835 ms  waited=30 ms  ran=15 ms
+Task B out@850 ms  back@853 ms  waited=3 ms  ran=15 ms
+Task B out@876 ms  back@895 ms  waited=19 ms  ran=23 ms
+Task B out@910 ms  back@941 ms  waited=30 ms  ran=15 ms
+Task B out@956 ms  back@986 ms  waited=30 ms  ran=15 ms
+Task B out@1001 ms  back@1032 ms  waited=30 ms  ran=15 ms
+Task B out@1047 ms  back@1062 ms  waited=15 ms  ran=15 ms
+Task B out@1077 ms  back@1092 ms  waited=15 ms  ran=15 ms
+Task B out@1107 ms  back@1122 ms  waited=15 ms  ran=15 ms
+Task B out@1138 ms  back@1153 ms  waited=15 ms  ran=15 ms
+Task B out@1168 ms  back@1183 ms  waited=15 ms  ran=15 ms
+Task B out@1198 ms  back@1213 ms  waited=15 ms  ran=15 ms
+Task B out@1229 ms  back@1244 ms  waited=15 ms  ran=15 ms
+Task B out@1289 ms  back@1304 ms  waited=15 ms  ran=45 ms
+Task B out@1319 ms  back@1335 ms  waited=15 ms  ran=15 ms
+Task B out@1350 ms  back@1365 ms  waited=15 ms  ran=15 ms
+Task B out@1380 ms  back@1395 ms  waited=15 ms  ran=15 ms
+Task B out@1410 ms  back@1426 ms  waited=15 ms  ran=15 ms
+Task B out@1441 ms  back@1456 ms  waited=15 ms  ran=15 ms
+Task B out@1471 ms  back@1486 ms  waited=15 ms  ran=15 ms
+Task B out@1501 ms  back@1516 ms  waited=15 ms  ran=15 ms
+Task B out@1532 ms  back@1547 ms  waited=15 ms  ran=15 ms
+Task B out@1562 ms  back@1577 ms  waited=15 ms  ran=15 ms
+Task B out@1592 ms  back@1607 ms  waited=15 ms  ran=15 ms
+Task B out@1622 ms  back@1638 ms  waited=15 ms  ran=15 ms
+Task B out@1668 ms  back@1683 ms  waited=15 ms  ran=30 ms
+Task B out@1698 ms  back@1713 ms  waited=15 ms  ran=15 ms
+Task B out@1729 ms  back@1744 ms  waited=15 ms  ran=15 ms
+Task B out@1759 ms  back@1774 ms  waited=15 ms  ran=15 ms
+Task B out@1789 ms  back@1804 ms  waited=15 ms  ran=15 ms
+Task B out@1819 ms  back@1835 ms  waited=15 ms  ran=15 ms
+Task B out@1850 ms  back@1866 ms  waited=16 ms  ran=15 ms
+Task B out@1880 ms  back@1895 ms  waited=15 ms  ran=14 ms
+Task B out@1910 ms  back@1925 ms  waited=15 ms  ran=15 ms
+Task B out@1941 ms  back@1956 ms  waited=15 ms  ran=15 ms
+Task B out@1971 ms  back@1986 ms  waited=15 ms  ran=15 ms
+Task B out@2001 ms  back@2016 ms  waited=15 ms  ran=15 ms
+Task B out@2032 ms  back@2047 ms  waited=15 ms  ran=15 ms
+Task C out@138 ms  back@168 ms  waited=30 ms  ran=15 ms
+Task C out@183 ms  back@213 ms  waited=30 ms  ran=15 ms
+Task C out@229 ms  back@261 ms  waited=32 ms  ran=15 ms
+Task C out@274 ms  back@304 ms  waited=30 ms  ran=13 ms
+Task C out@319 ms  back@350 ms  waited=30 ms  ran=15 ms
+Task C out@365 ms  back@395 ms  waited=30 ms  ran=15 ms
+Task C out@410 ms  back@441 ms  waited=30 ms  ran=15 ms
+Task C out@464 ms  back@471 ms  waited=6 ms  ran=23 ms
+Task C out@486 ms  back@516 ms  waited=30 ms  ran=15 ms
+Task C out@532 ms  back@562 ms  waited=30 ms  ran=15 ms
+Task C out@577 ms  back@607 ms  waited=30 ms  ran=15 ms
+Task C out@622 ms  back@655 ms  waited=32 ms  ran=15 ms
+Task C out@683 ms  back@713 ms  waited=30 ms  ran=28 ms
+Task C out@729 ms  back@759 ms  waited=30 ms  ran=15 ms
+Task C out@774 ms  back@804 ms  waited=30 ms  ran=15 ms
+Task C out@819 ms  back@850 ms  waited=30 ms  ran=15 ms
+Task C out@880 ms  back@910 ms  waited=30 ms  ran=30 ms
+Task C out@926 ms  back@956 ms  waited=30 ms  ran=15 ms
+Task C out@971 ms  back@1001 ms  waited=30 ms  ran=15 ms
+Task C out@1016 ms  back@1047 ms  waited=30 ms  ran=15 ms
+==== END ====
